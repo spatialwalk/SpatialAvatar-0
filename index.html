@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="SpatialAvatar-0: High-Quality 4D Head Avatar with Multi-Stage Reconstruction">
+    <meta name="keywords" content="video generation, diffusion models, sparse attention, step distillation, machine learning, ICLR 2025">
+    <meta name="author" content="Youping Gu, Xiaolong Li, Yuhao Hu, Minqi Chen, Bohan Zhuang">
+    <!-- Updated for consistent commit history -->
+    
+    <title>SpatialAvatar-0: High-Quality 4D Head Avatar with Multi-Stage Reconstruction</title>
+    <link rel="icon" type="image/png" href="https://www.spatialreal.ai/icons/header-img.png">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/style.css?v=20260525b">
+    <link rel="stylesheet" href="css/responsive.css?v=20260525b">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-links">
+                <a href="https://www.spatialreal.ai/" class="nav-logo" target="_blank" aria-label="SpatialReal">
+                    <img src="https://www.spatialreal.ai/icons/header-img.png" alt="SpatialReal">
+                    <span>SpatialReal</span>
+                </a>
+                <a href="#top">Top</a>
+                <a href="#abstract">Abstract</a>
+                <a href="#contributions">Contributions</a>
+                <a href="#method">Method</a>
+                <a href="#videos">Demonstrations</a>
+                <a href="#citation">Citation</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <header id="top" class="hero">
+        <div class="container">
+            <h1 class="title">
+                <span class="highlight">SpatialAvatar-0</span>: High-Quality 4D Head Avatar with Multi-Stage Reconstruction
+            </h1>
+
+            <!-- <h3>
+                Paper 2026
+            </h3> -->
+            
+            <div class="authors">
+                <div class="author-group">
+                    <span class="author">Yiran Wang<sup>1*</sup></span>
+                    <span class="author"><a href="https://steve-zeyu-zhang.github.io/" target="_blank" rel="noopener noreferrer" style="color: inherit; text-decoration: inherit;">Zeyu Zhang</a><sup>2*</sup></span>
+                    <span class="author">Yuanming Li<sup>2*</sup></span>
+                    <span class="author">Ziming Wang<sup>3</sup></span>
+                    <span class="author">Yang Zhao<sup>4&dagger;</sup></span>
+                </div>
+                
+                <div class="affiliations">
+                    <div class="affiliation"><sup>1</sup>USYD</div>
+                    <div class="affiliation"><sup>2</sup>SpatialReal</div>
+                    <div class="affiliation"><sup>3</sup>ZJU</div>
+                    <div class="affiliation"><sup>4</sup>La Trobe</div>
+                </div>
+                
+                <div class="author-notes">
+                    <span><sup>*</sup>Equal contribution.</span>
+                    <span><sup>&dagger;</sup>Corresponding author.</span>
+                </div>
+            </div>
+            
+            <div class="hero-buttons">
+                <a href="https://arxiv.org/abs/" class="btn btn-primary" target="_blank">
+                    <i class="fas fa-file-alt"></i> Paper
+                </a>
+                <!-- <a href="https://github.com/" class="btn btn-primary" target="_blank">
+                    <i class="fab fa-github"></i> Code
+                </a> -->
+                <!-- <a href="https://huggingface.co/" class="btn btn-secondary" target="_blank">
+                    🤗 Model
+                </a> -->
+            </div>
+        </div>
+    </header>
+
+    <!-- Abstract -->
+    <section id="abstract" class="section">
+        <div class="container">
+            <h2 class="section-title">Abstract</h2>
+            <div class="abstract-content">
+                <p>
+                    High-quality 4D head avatars from one or a few source portraits are central to telepresence, AR/VR, and digital-human interaction. 3D Gaussian Splatting (3DGS) has emerged as the dominant representation, with two complementary regimes (generalizable feed-forward predictors and per-subject refiners) maturing in parallel. However, existing feed-forward predictors are trained on a single dataset family with a hard-coded source count, inheriting the corresponding domain bias. Per-subject refiners require 300K--600K iterations and rely on adaptive densification that destroys upstream Gaussian layouts, preventing the two regimes from sharing a representation end-to-end. To bridge both regimes we propose <strong>SpatialAvatar-0</strong> on a shared FLAME-mesh-bound Gaussian representation: a feed-forward generator with a parameter-free K-source mean-pool and a monocular-temporal &rarr; multi-view-spatial two-phase schedule that anchors against identity-prior collapse onto the smaller multi-view set. We further introduce a 10K-iter layout-preserving per-subject refinement loop that freezes the FLAME-binding and Gaussian count and replaces densification with a three-component anti-spike regularization. On VFHQ/HDTF cross-domain zero-shot we surpass the in-domain leader GAGAvatar by <strong>+1.5 dB</strong> PSNR despite never training on either test domain, and on the SplattingAvatar monocular benchmark we lead every reported metric, surpassing the 300K-iter GeoAvatar by <strong>+1.3 dB</strong> PSNR at up to <strong>60&times;</strong> shorter per-subject schedule than common SOTA baselines.
+                </p>
+                
+                <div class="key-results">
+                    <div class="result-item">
+                        <div class="result-number">+1.5 dB</div>
+                        <div class="result-desc">PSNR over GAGAvatar zero-shot</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-number">+1.3 dB</div>
+                        <div class="result-desc">PSNR over 300K-iter GeoAvatar</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-number">60&times;</div>
+                        <div class="result-desc">shorter per-subject refinement</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Key Contributions -->
+    <section id="contributions" class="section bg-light">
+        <div class="container">
+            <h2 class="section-title">Key Contributions</h2>
+            <div class="contributions-grid">
+                <div class="contribution-card">
+                    <div class="card-icon">
+                        <i class="fas fa-cogs"></i>
+                    </div>
+                    <h3>K-Source Feed-Forward Generator</h3>
+                    <p>A K-source-variable feed-forward FLAME-mesh-bound Gaussian generator with a monocular &rarr; multi-view two-phase training schedule, anchored by L2-SP and a 25% NeRSemble cross-time mix against identity-prior collapse on the smaller multi-view set.</p>
+                </div>
+                
+                <div class="contribution-card">
+                    <div class="card-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h3>Layout-Preserving Refinement</h3>
+                    <p>A 10K-iter layout-preserving per-subject refinement loop with a three-component anti-spike regularization replacing densification, leading every reported metric on the SplattingAvatar leaderboard at up to <strong>60&times;</strong> shorter schedule than common SOTA per-subject baselines.</p>
+                </div>
+                
+                <div class="contribution-card">
+                    <div class="card-icon">
+                        <i class="fas fa-rocket"></i>
+                    </div>
+                    <h3>Comprehensive Evaluation</h3>
+                    <p>Comprehensive cross-domain and per-subject experiments on VFHQ, HDTF, and the SplattingAvatar monocular benchmark, with ablations validating every design choice.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Method Overview -->
+    <section id="method" class="section">
+        <div class="container">
+            <h2 class="section-title">Method Overview</h2>
+            <div class="method-diagram">
+                <img src="assets/images/method.png" alt="SpatialAvatar-0 method overview" class="responsive-img">
+                <p class="image-caption">
+                    We frame head avatar reconstruction as two coupled stages over a shared FLAME-mesh-bound 3D Gaussian representation. <strong>Stage 1</strong> (feed-forward): a single network f<sub>&theta;</sub> ingests K &isin; {1,2,3,4} source portrait images and emits face-bound 3D Gaussians in one forward pass. <strong>Stage 2</strong> (optional per-subject optimization): starting from f<sub>&theta;</sub>'s output for a chosen reference frame, we run 10K iterations of photometric refinement against the target video. Stage 1 is trained in two phases on the same architecture: monocular-temporal pretraining (Phase 1, CelebV-HQ) and multi-view-spatial post-training (Phase 2, NeRSemble); the variable source count K &isin; {1,2,3,4} during training exposes f<sub>&theta;</sub> to monocular and multi-view contexts within a single training distribution.
+                </p>
+            </div>
+
+        </div>
+    </section>
+
+
+    <!-- Video Demonstrations -->
+    <section id="videos" class="section bg-light">
+        <div class="container">
+            <h2 class="section-title">Demonstrations</h2>
+            <div class="demo-toggle-row">
+                <button id="point-cloud-toggle" class="demo-toggle-btn" type="button">Show Point Cloud</button>
+            </div>
+            <h3 class="demo-subtitle">In ID</h3>
+            <div class="demo-table-wrapper">
+                <table class="demo-comparison-table demo-comparison-table-compact">
+                    <thead>
+                        <tr>
+                            <th class="ours-header">Ours</th>
+                            <th>GAGAvatar</th>
+                            <th>CVTHead</th>
+                            <th>GPAvatar</th>
+                            <th>Portrait4D-v2</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><video src="assets/orbit_compare_inid_pack/orbit_videos_separate/08am-TIvvFc_8__self/ours.mp4" autoplay muted loop playsinline preload="metadata"></video></td>
+                            <td><video src="assets/orbit_compare_inid_pack/orbit_videos_separate/08am-TIvvFc_8__self/gagavatar.mp4" autoplay muted loop playsinline preload="metadata"></video></td>
+                            <td><video src="assets/orbit_compare_inid_pack/orbit_videos_separate/08am-TIvvFc_8__self/cvthead.mp4" autoplay muted loop playsinline preload="metadata"></video></td>
+                            <td><video src="assets/orbit_compare_inid_pack/orbit_videos_separate/08am-TIvvFc_8__self/gpavatar.mp4" autoplay muted loop playsinline preload="metadata"></video></td>
+                            <td><video src="assets/orbit_compare_inid_pack/orbit_videos_separate/08am-TIvvFc_8__self/portrait4d_v2.mp4" autoplay muted loop playsinline preload="metadata"></video></td>
+                        </tr>
+                        <tr>
+                            <td><video src="assets/orbit_compare_inid_pack/orbit_videos_separate/AXzcSCf3kwg_15__self/ours.mp4" autoplay muted loop playsinline preload="metadata"></video></td>
+                            <td><video src="assets/orbit_compare_inid_pack/orbit_videos_separate/AXzcSCf3kwg_15__self/gagavatar.mp4" autoplay muted loop playsinline preload="metadata"></video></td>
+                            <td><video src="assets/orbit_compare_inid_pack/orbit_videos_separate/AXzcSCf3kwg_15__self/cvthead.mp4" autoplay muted loop playsinline preload="metadata"></video></td>
+                            <td><video src="assets/orbit_compare_inid_pack/orbit_videos_separate/AXzcSCf3kwg_15__self/gpavatar.mp4" autoplay muted loop playsinline preload="metadata"></video></td>
+                            <td><video src="assets/orbit_compare_inid_pack/orbit_videos_separate/AXzcSCf3kwg_15__self/portrait4d_v2.mp4" autoplay muted loop playsinline preload="metadata"></video></td>
+                        </tr>
+                        <tr>
+                            <td><video src="assets/orbit_compare_inid_pack/orbit_videos_separate/mD7G88--kBM_4__self/ours.mp4" autoplay muted loop playsinline preload="metadata"></video></td>
+                            <td><video src="assets/orbit_compare_inid_pack/orbit_videos_separate/mD7G88--kBM_4__self/gagavatar.mp4" autoplay muted loop playsinline preload="metadata"></video></td>
+                            <td><video src="assets/orbit_compare_inid_pack/orbit_videos_separate/mD7G88--kBM_4__self/cvthead.mp4" autoplay muted loop playsinline preload="metadata"></video></td>
+                            <td><video src="assets/orbit_compare_inid_pack/orbit_videos_separate/mD7G88--kBM_4__self/gpavatar.mp4" autoplay muted loop playsinline preload="metadata"></video></td>
+                            <td><video src="assets/orbit_compare_inid_pack/orbit_videos_separate/mD7G88--kBM_4__self/portrait4d_v2.mp4" autoplay muted loop playsinline preload="metadata"></video></td>
+                        </tr>
+                        <tr>
+                            <td><video src="assets/orbit_compare_inid_pack/orbit_videos_separate/wNj9-72I-Rg_27__self/ours.mp4" autoplay muted loop playsinline preload="metadata"></video></td>
+                            <td><video src="assets/orbit_compare_inid_pack/orbit_videos_separate/wNj9-72I-Rg_27__self/gagavatar.mp4" autoplay muted loop playsinline preload="metadata"></video></td>
+                            <td><video src="assets/orbit_compare_inid_pack/orbit_videos_separate/wNj9-72I-Rg_27__self/cvthead.mp4" autoplay muted loop playsinline preload="metadata"></video></td>
+                            <td><video src="assets/orbit_compare_inid_pack/orbit_videos_separate/wNj9-72I-Rg_27__self/gpavatar.mp4" autoplay muted loop playsinline preload="metadata"></video></td>
+                            <td><video src="assets/orbit_compare_inid_pack/orbit_videos_separate/wNj9-72I-Rg_27__self/portrait4d_v2.mp4" autoplay muted loop playsinline preload="metadata"></video></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <h3 class="demo-subtitle">Cross ID</h3>
+            <div class="demo-table-wrapper">
+                <table class="demo-comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Reference</th>
+                            <th>Driving</th>
+                            <th class="ours-header">Ours</th>
+                            <th>GAGAvatar</th>
+                            <th>CVTHead</th>
+                            <th>GPAvatar</th>
+                            <th>Portrait4D-v2</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><img src="assets/orbit_compare_xid_pack/orbit_videos_separate/J04NeIyBqBA_0_0__drv_FbWPEz8NFS8_11/reference.png" alt="Reference portrait for comparison 1"></td>
+                            <td><video src="assets/orbit_compare_xid_pack/orbit_videos_separate/J04NeIyBqBA_0_0__drv_FbWPEz8NFS8_11/driving.mp4" autoplay muted loop playsinline preload="metadata"></video></td>
+                            <td><video src="assets/orbit_compare_xid_pack/orbit_videos_separate/J04NeIyBqBA_0_0__drv_FbWPEz8NFS8_11/ours.mp4" autoplay muted loop playsinline preload="metadata"></video></td>
+                            <td><video src="assets/orbit_compare_xid_pack/orbit_videos_separate/J04NeIyBqBA_0_0__drv_FbWPEz8NFS8_11/gagavatar.mp4" autoplay muted loop playsinline preload="metadata"></video></td>
+                            <td><video src="assets/orbit_compare_xid_pack/orbit_videos_separate/J04NeIyBqBA_0_0__drv_FbWPEz8NFS8_11/cvthead.mp4" autoplay muted loop playsinline preload="metadata"></video></td>
+                            <td><video src="assets/orbit_compare_xid_pack/orbit_videos_separate/J04NeIyBqBA_0_0__drv_FbWPEz8NFS8_11/gpavatar.mp4" autoplay muted loop playsinline preload="metadata"></video></td>
+                            <td><video src="assets/orbit_compare_xid_pack/orbit_videos_separate/J04NeIyBqBA_0_0__drv_FbWPEz8NFS8_11/portrait4d_v2.mp4" autoplay muted loop playsinline preload="metadata"></video></td>
+                        </tr>
+                        <tr>
+                            <td><img src="assets/orbit_compare_xid_pack/orbit_videos_separate/J04NeIyBqBA_0_0__drv_iN8DWe98VUQ_15_1/reference.png" alt="Reference portrait for comparison 2"></td>
+                            <td><video src="assets/orbit_compare_xid_pack/orbit_videos_separate/J04NeIyBqBA_0_0__drv_iN8DWe98VUQ_15_1/driving.mp4" autoplay muted loop playsinline preload="metadata"></video></td>
+                            <td><video src="assets/orbit_compare_xid_pack/orbit_videos_separate/J04NeIyBqBA_0_0__drv_iN8DWe98VUQ_15_1/ours.mp4" autoplay muted loop playsinline preload="metadata"></video></td>
+                            <td><video src="assets/orbit_compare_xid_pack/orbit_videos_separate/J04NeIyBqBA_0_0__drv_iN8DWe98VUQ_15_1/gagavatar.mp4" autoplay muted loop playsinline preload="metadata"></video></td>
+                            <td><video src="assets/orbit_compare_xid_pack/orbit_videos_separate/J04NeIyBqBA_0_0__drv_iN8DWe98VUQ_15_1/cvthead.mp4" autoplay muted loop playsinline preload="metadata"></video></td>
+                            <td><video src="assets/orbit_compare_xid_pack/orbit_videos_separate/J04NeIyBqBA_0_0__drv_iN8DWe98VUQ_15_1/gpavatar.mp4" autoplay muted loop playsinline preload="metadata"></video></td>
+                            <td><video src="assets/orbit_compare_xid_pack/orbit_videos_separate/J04NeIyBqBA_0_0__drv_iN8DWe98VUQ_15_1/portrait4d_v2.mp4" autoplay muted loop playsinline preload="metadata"></video></td>
+                        </tr>
+                        <tr>
+                            <td><img src="assets/orbit_compare_xid_pack/orbit_videos_separate/KfnptgDOvNo_0_0__drv_H6l6_elF0_3/reference.png" alt="Reference portrait for comparison 3"></td>
+                            <td><video src="assets/orbit_compare_xid_pack/orbit_videos_separate/KfnptgDOvNo_0_0__drv_H6l6_elF0_3/driving.mp4" autoplay muted loop playsinline preload="metadata"></video></td>
+                            <td><video src="assets/orbit_compare_xid_pack/orbit_videos_separate/KfnptgDOvNo_0_0__drv_H6l6_elF0_3/ours.mp4" autoplay muted loop playsinline preload="metadata"></video></td>
+                            <td><video src="assets/orbit_compare_xid_pack/orbit_videos_separate/KfnptgDOvNo_0_0__drv_H6l6_elF0_3/gagavatar.mp4" autoplay muted loop playsinline preload="metadata"></video></td>
+                            <td><video src="assets/orbit_compare_xid_pack/orbit_videos_separate/KfnptgDOvNo_0_0__drv_H6l6_elF0_3/cvthead.mp4" autoplay muted loop playsinline preload="metadata"></video></td>
+                            <td><video src="assets/orbit_compare_xid_pack/orbit_videos_separate/KfnptgDOvNo_0_0__drv_H6l6_elF0_3/gpavatar.mp4" autoplay muted loop playsinline preload="metadata"></video></td>
+                            <td><video src="assets/orbit_compare_xid_pack/orbit_videos_separate/KfnptgDOvNo_0_0__drv_H6l6_elF0_3/portrait4d_v2.mp4" autoplay muted loop playsinline preload="metadata"></video></td>
+                        </tr>
+                        <tr>
+                            <td><img src="assets/orbit_compare_xid_pack/orbit_videos_separate/KfnptgDOvNo_0_0__drv_RGhunCKOkIk_3/reference.png" alt="Reference portrait for comparison 4"></td>
+                            <td><video src="assets/orbit_compare_xid_pack/orbit_videos_separate/KfnptgDOvNo_0_0__drv_RGhunCKOkIk_3/driving.mp4" autoplay muted loop playsinline preload="metadata"></video></td>
+                            <td><video src="assets/orbit_compare_xid_pack/orbit_videos_separate/KfnptgDOvNo_0_0__drv_RGhunCKOkIk_3/ours.mp4" autoplay muted loop playsinline preload="metadata"></video></td>
+                            <td><video src="assets/orbit_compare_xid_pack/orbit_videos_separate/KfnptgDOvNo_0_0__drv_RGhunCKOkIk_3/gagavatar.mp4" autoplay muted loop playsinline preload="metadata"></video></td>
+                            <td><video src="assets/orbit_compare_xid_pack/orbit_videos_separate/KfnptgDOvNo_0_0__drv_RGhunCKOkIk_3/cvthead.mp4" autoplay muted loop playsinline preload="metadata"></video></td>
+                            <td><video src="assets/orbit_compare_xid_pack/orbit_videos_separate/KfnptgDOvNo_0_0__drv_RGhunCKOkIk_3/gpavatar.mp4" autoplay muted loop playsinline preload="metadata"></video></td>
+                            <td><video src="assets/orbit_compare_xid_pack/orbit_videos_separate/KfnptgDOvNo_0_0__drv_RGhunCKOkIk_3/portrait4d_v2.mp4" autoplay muted loop playsinline preload="metadata"></video></td>
+                        </tr>
+                        <tr>
+                            <td><img src="assets/orbit_compare_xid_pack/orbit_videos_separate/W1HZbjc9XYY_0_0__drv_F2tMdxxycCU_0/reference.png" alt="Reference portrait for comparison 5"></td>
+                            <td><video src="assets/orbit_compare_xid_pack/orbit_videos_separate/W1HZbjc9XYY_0_0__drv_F2tMdxxycCU_0/driving.mp4" autoplay muted loop playsinline preload="metadata"></video></td>
+                            <td><video src="assets/orbit_compare_xid_pack/orbit_videos_separate/W1HZbjc9XYY_0_0__drv_F2tMdxxycCU_0/ours.mp4" autoplay muted loop playsinline preload="metadata"></video></td>
+                            <td><video src="assets/orbit_compare_xid_pack/orbit_videos_separate/W1HZbjc9XYY_0_0__drv_F2tMdxxycCU_0/gagavatar.mp4" autoplay muted loop playsinline preload="metadata"></video></td>
+                            <td><video src="assets/orbit_compare_xid_pack/orbit_videos_separate/W1HZbjc9XYY_0_0__drv_F2tMdxxycCU_0/cvthead.mp4" autoplay muted loop playsinline preload="metadata"></video></td>
+                            <td><video src="assets/orbit_compare_xid_pack/orbit_videos_separate/W1HZbjc9XYY_0_0__drv_F2tMdxxycCU_0/gpavatar.mp4" autoplay muted loop playsinline preload="metadata"></video></td>
+                            <td><video src="assets/orbit_compare_xid_pack/orbit_videos_separate/W1HZbjc9XYY_0_0__drv_F2tMdxxycCU_0/portrait4d_v2.mp4" autoplay muted loop playsinline preload="metadata"></video></td>
+                        </tr>
+                        <tr>
+                            <td><img src="assets/orbit_compare_xid_pack/orbit_videos_separate/W1HZbjc9XYY_0_0__drv_fm6V_Zf_ugM_50_0/reference.png" alt="Reference portrait for comparison 6"></td>
+                            <td><video src="assets/orbit_compare_xid_pack/orbit_videos_separate/W1HZbjc9XYY_0_0__drv_fm6V_Zf_ugM_50_0/driving.mp4" autoplay muted loop playsinline preload="metadata"></video></td>
+                            <td><video src="assets/orbit_compare_xid_pack/orbit_videos_separate/W1HZbjc9XYY_0_0__drv_fm6V_Zf_ugM_50_0/ours.mp4" autoplay muted loop playsinline preload="metadata"></video></td>
+                            <td><video src="assets/orbit_compare_xid_pack/orbit_videos_separate/W1HZbjc9XYY_0_0__drv_fm6V_Zf_ugM_50_0/gagavatar.mp4" autoplay muted loop playsinline preload="metadata"></video></td>
+                            <td><video src="assets/orbit_compare_xid_pack/orbit_videos_separate/W1HZbjc9XYY_0_0__drv_fm6V_Zf_ugM_50_0/cvthead.mp4" autoplay muted loop playsinline preload="metadata"></video></td>
+                            <td><video src="assets/orbit_compare_xid_pack/orbit_videos_separate/W1HZbjc9XYY_0_0__drv_fm6V_Zf_ugM_50_0/gpavatar.mp4" autoplay muted loop playsinline preload="metadata"></video></td>
+                            <td><video src="assets/orbit_compare_xid_pack/orbit_videos_separate/W1HZbjc9XYY_0_0__drv_fm6V_Zf_ugM_50_0/portrait4d_v2.mp4" autoplay muted loop playsinline preload="metadata"></video></td>
+                        </tr>
+                        <tr>
+                            <td><img src="assets/orbit_compare_xid_pack/orbit_videos_separate/Xjtc4i63AMo_0_0__drv_YdqUiKHAdyg_10/reference.png" alt="Reference portrait for comparison 7"></td>
+                            <td><video src="assets/orbit_compare_xid_pack/orbit_videos_separate/Xjtc4i63AMo_0_0__drv_YdqUiKHAdyg_10/driving.mp4" autoplay muted loop playsinline preload="metadata"></video></td>
+                            <td><video src="assets/orbit_compare_xid_pack/orbit_videos_separate/Xjtc4i63AMo_0_0__drv_YdqUiKHAdyg_10/ours.mp4" autoplay muted loop playsinline preload="metadata"></video></td>
+                            <td><video src="assets/orbit_compare_xid_pack/orbit_videos_separate/Xjtc4i63AMo_0_0__drv_YdqUiKHAdyg_10/gagavatar.mp4" autoplay muted loop playsinline preload="metadata"></video></td>
+                            <td><video src="assets/orbit_compare_xid_pack/orbit_videos_separate/Xjtc4i63AMo_0_0__drv_YdqUiKHAdyg_10/cvthead.mp4" autoplay muted loop playsinline preload="metadata"></video></td>
+                            <td><video src="assets/orbit_compare_xid_pack/orbit_videos_separate/Xjtc4i63AMo_0_0__drv_YdqUiKHAdyg_10/gpavatar.mp4" autoplay muted loop playsinline preload="metadata"></video></td>
+                            <td><video src="assets/orbit_compare_xid_pack/orbit_videos_separate/Xjtc4i63AMo_0_0__drv_YdqUiKHAdyg_10/portrait4d_v2.mp4" autoplay muted loop playsinline preload="metadata"></video></td>
+                        </tr>
+                        <tr>
+                            <td><img src="assets/orbit_compare_xid_pack/orbit_videos_separate/Xjtc4i63AMo_0_0__drv_nBYh_IDoAfg_3/reference.png" alt="Reference portrait for comparison 8"></td>
+                            <td><video src="assets/orbit_compare_xid_pack/orbit_videos_separate/Xjtc4i63AMo_0_0__drv_nBYh_IDoAfg_3/driving.mp4" autoplay muted loop playsinline preload="metadata"></video></td>
+                            <td><video src="assets/orbit_compare_xid_pack/orbit_videos_separate/Xjtc4i63AMo_0_0__drv_nBYh_IDoAfg_3/ours.mp4" autoplay muted loop playsinline preload="metadata"></video></td>
+                            <td><video src="assets/orbit_compare_xid_pack/orbit_videos_separate/Xjtc4i63AMo_0_0__drv_nBYh_IDoAfg_3/gagavatar.mp4" autoplay muted loop playsinline preload="metadata"></video></td>
+                            <td><video src="assets/orbit_compare_xid_pack/orbit_videos_separate/Xjtc4i63AMo_0_0__drv_nBYh_IDoAfg_3/cvthead.mp4" autoplay muted loop playsinline preload="metadata"></video></td>
+                            <td><video src="assets/orbit_compare_xid_pack/orbit_videos_separate/Xjtc4i63AMo_0_0__drv_nBYh_IDoAfg_3/gpavatar.mp4" autoplay muted loop playsinline preload="metadata"></video></td>
+                            <td><video src="assets/orbit_compare_xid_pack/orbit_videos_separate/Xjtc4i63AMo_0_0__drv_nBYh_IDoAfg_3/portrait4d_v2.mp4" autoplay muted loop playsinline preload="metadata"></video></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- Citation -->
+    <section id="citation" class="section">
+        <div class="container">
+            <h2 class="section-title">Citation</h2>
+            <div class="citation-box">
+                <pre id="bibtex-text">@misc{wang2026spatialavatar0,
+      title={SpatialAvatar-0: High-Quality 4D Head Avatar with Multi-Stage Reconstruction}, 
+      author={Yiran Wang and Zeyu Zhang and Yuanming Li and Ziming Wang and Yang Zhao},
+      year={2026},
+      journal={Tech Report},
+}</pre>
+                <button class="copy-btn" onclick="copyBibtex()">
+                    <i class="fas fa-copy"></i> Copy BibTeX
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 SpatialAvatar-0. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="#top">Top</a>
+                <a href="#abstract">Abstract</a>
+                <a href="#contributions">Contributions</a>
+                <a href="#method">Method</a>
+                <a href="#videos">Demonstrations</a>
+                <a href="#citation">Citation</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/main.js?v=20260525o"></script>
+    <script src="js/gallery.js"></script>
+</body>
+</html>
