@@ -35,13 +35,6 @@
     --transition-slow: 0.5s ease;
 }
 
-@font-face {
-    font-family: Gilroy-Bold;
-    font-style: normal;
-    font-weight: 400;
-    src: local("Gilroy-Bold"), url("https://www.spatialreal.ai/fonts/Gilroy-Bold.woff") format("woff");
-}
-
 /* ==========================================
    Base Styles and Reset
    ========================================== */
@@ -185,16 +178,16 @@ a:hover {
 
 .nav-links .nav-logo img {
     display: block;
-    width: 25px;
-    height: 36px;
+    width: 29px;
+    height: 24px;
     object-fit: contain;
 }
 
 .nav-links .nav-logo span {
-    color: #282828;
-    font-family: Gilroy-Bold, sans-serif;
+    color: var(--text-primary);
+    font-family: var(--font-primary);
     font-style: normal;
-    font-weight: 400;
+    font-weight: 600;
     font-size: 24px;
     line-height: 30px;
     letter-spacing: -0.01em;

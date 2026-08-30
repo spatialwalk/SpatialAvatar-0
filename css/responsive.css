@@ -80,8 +80,8 @@
     }
 
     .nav-links .nav-logo img {
-        width: 16.67px;
-        height: 23.93px;
+        width: 24px;
+        height: 20px;
     }
 
     .nav-links .nav-logo span {
@@ -580,6 +580,10 @@
     
     .navbar {
         background: rgba(26, 26, 26, 0.95);
+    }
+
+    .nav-links .nav-logo img {
+        filter: brightness(0) invert(1);
     }
     
     .hero {
